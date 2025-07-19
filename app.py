@@ -5,7 +5,9 @@ import datetime
 
 app = Flask(__name__)
 CORS(app)
-
+@app.route('/')
+def home():
+    return render_template('index.html')  # ✅ This line serves index.html
 @app.route('/location', methods=['POST'])
 def receive_location():
     data = request.get_json()
