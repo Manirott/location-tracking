@@ -1,7 +1,7 @@
-import os
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template  # 👈 this is the fix
 from flask_cors import CORS
 import datetime
+import os
 
 app = Flask(__name__)
 CORS(app)
